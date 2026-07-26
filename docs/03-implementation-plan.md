@@ -30,8 +30,11 @@ Fine-grained checklist (one or few commits each).
 
 ## Phase B — Tools
 
-### B1 — Tool contracts
-- [ ] Pydantic tool I/O + `ToolResult`  
+### B1 — Tool contracts ✅
+- [x] Pydantic tool I/O + `ToolResult` (`app.tools.contracts`)  
+- [x] HITL resume payload (`approve` / `edit` / `reject`)  
+
+**Accept:** Models validate; golden tool names match `ToolName` enum.
 
 ### B2 — search_vendors
 - [ ] Fixture-backed search + ranking  

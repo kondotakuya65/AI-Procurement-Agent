@@ -124,7 +124,7 @@ docker compose up --build
 3. **Done (this commit):** LLM adapter (`ollama` / `openai` / `anthropic` / `mock`)
 
 ### Phase B — Tools
-4. Tool contracts / `ToolResult` shapes  
+4. **Done (this commit):** Tool contracts / `ToolResult` shapes  
 5. `search_vendors` (fixture catalog)  
 6. FinOps HTTP client + mock fallback (`query_finops_rag`, `review_invoice`)  
 7. `draft_email` tool
