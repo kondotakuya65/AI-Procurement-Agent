@@ -1,0 +1,19 @@
+.PHONY: backend-install backend-run frontend-install frontend-run test health
+
+backend-install:
+	cd backend && python -m venv .venv && (.venv/Scripts/pip install -r requirements.txt || .venv/bin/pip install -r requirements.txt)
+
+backend-run:
+	cd backend && uvicorn app.main:app --reload --port 8100
+
+frontend-install:
+	cd frontend && npm install
+
+frontend-run:
+	cd frontend && npm run dev
+
+test:
+	cd backend && pytest
+
+health:
+	curl -s http://localhost:8100/api/health

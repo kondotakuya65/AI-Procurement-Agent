@@ -1,0 +1,86 @@
+# 03 — Implementation plan
+
+Fine-grained checklist (one or few commits each).
+
+## Phase A — Foundation
+
+### A1 — Scaffold ✅ (this commit)
+- [x] README, license, `.gitignore`, `.env.example`  
+- [x] Docs (scenario, architecture, plan, decisions)  
+- [x] FastAPI health skeleton + smoke test  
+- [x] Next.js shell + favicon (port 3001)  
+- [x] docker-compose (API 8100 / UI 3001 / Postgres 5433)  
+- [x] Fixtures directory placeholders  
+
+**Accept:** `GET /api/health` OK; UI loads and shows health.
+
+### A2 — Fixtures
+- [ ] Vendor catalog JSON (SKU-1001 offers, alternatives)  
+- [ ] Historical price fixtures for mock FinOps  
+- [ ] Golden scenario definitions  
+
+### A3 — LLM adapter
+- [ ] `ollama` / `openai` / `anthropic` / `mock`  
+- [ ] Shared settings + timeouts  
+
+## Phase B — Tools
+
+### B1 — Tool contracts
+- [ ] Pydantic tool I/O + `ToolResult`  
+
+### B2 — search_vendors
+- [ ] Fixture-backed search + ranking  
+
+### B3 — FinOps client
+- [ ] `query_finops_rag`, `review_invoice`  
+- [ ] Live HTTP + mock fallback / retries  
+
+### B4 — draft_email
+- [ ] Professional draft prompt wrapper  
+
+## Phase C — LangGraph
+
+### C1 — State + skeleton
+- [ ] `ProcurementState`, node stubs, compile  
+
+### C2 — Happy path
+- [ ] parse → search → history → compare → draft → summary  
+
+### C3 — Re-plan / errors
+- [ ] Zero vendors → similar SKU suggestion  
+- [ ] Tool failure retry / degrade  
+
+### C4 — HITL
+- [ ] Interrupt before send; resume approve/edit/reject  
+
+## Phase D — API + streaming
+
+### D1 — Runs API
+- [ ] create run, get status, resume  
+
+### D2 — SSE traces
+- [ ] Stream thought / action / observation  
+
+## Phase E — UI
+
+### E1 — Workspace
+- [ ] Goal box, trace log, state side panel  
+
+### E2 — HITL panel
+- [ ] Draft preview + Approve / Edit / Reject  
+
+## Phase F — Quality + stretch
+
+### F1 — Eval + CI
+- [ ] Golden tool-order tests, mocked LLM  
+
+### F2 — Reflection stretch
+- [ ] Reviewer LLM rewrites email if weak  
+
+### F3 — Integrations stretch
+- [ ] Optional live search flag  
+- [ ] Compose alongside FinOps-RAG  
+
+## MVP ship line
+
+**Through E2** = portfolio-ready demo. F1 strongly recommended; F2–F3 optional.

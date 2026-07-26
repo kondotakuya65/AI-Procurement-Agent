@@ -1,0 +1,48 @@
+services:
+  api:
+    build:
+      context: ./backend
+    ports:
+      - "8100:8100"
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+psycopg2://procure:procure@db:5432/procurement_agent
+      FIXTURES_DIR: /fixtures
+      OUTBOX_DIR: /data/outbox
+      LLM_PROVIDER: ${LLM_PROVIDER:-mock}
+      FINOPS_MODE: ${FINOPS_MODE:-mock}
+      FINOPS_API_URL: ${FINOPS_API_URL:-http://host.docker.internal:8000}
+    volumes:
+      - procure_data:/data
+      - ./fixtures:/fixtures:ro
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: procure
+      POSTGRES_PASSWORD: procure
+      POSTGRES_DB: procurement_agent
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        API_PROXY_TARGET: http://api:8100
+    ports:
+      - "3001:3001"
+    environment:
+      API_PROXY_TARGET: http://api:8100
+      PORT: "3001"
+    depends_on:
+      - api
+
+volumes:
+  procure_data:
+  postgres_data:
