@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "invoice_id": "INV-104",
+      "vendor": "Alpha Supplies",
+      "po_number": "PO-4452",
+      "sku": "SKU-1001",
+      "invoice_unit_price": 10.8,
+      "contract_unit_price": 10.0,
+      "drift_pct": 8.0,
+      "max_price_drift_pct": 5.0,
+      "po_match": true,
+      "recommendation": "Reject",
+      "rationale": "PO-4452 matches but SKU-1001 unit price is 8% over the $10.00 contract (threshold 5%)."
+    },
+    {
+      "invoice_id": "INV-101",
+      "vendor": "Alpha Supplies",
+      "po_number": "PO-4452",
+      "sku": "SKU-1001",
+      "invoice_unit_price": 10.0,
+      "contract_unit_price": 10.0,
+      "drift_pct": 0.0,
+      "max_price_drift_pct": 5.0,
+      "po_match": true,
+      "recommendation": "Accept",
+      "rationale": "PO and unit price match Alpha contract."
+    }
+  ]
+}

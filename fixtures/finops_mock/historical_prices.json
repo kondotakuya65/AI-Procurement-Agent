@@ -1,0 +1,82 @@
+{
+  "version": 1,
+  "currency": "USD",
+  "source": "Aligned with AI-FinOps-RAG fixtures/ground_truth.json",
+  "sku_history": [
+    {
+      "sku": "SKU-1001",
+      "description": "Widget A",
+      "vendor": "Alpha Supplies",
+      "contract_unit_price": 10.0,
+      "last_paid_unit_price": 10.0,
+      "invoice_ids": ["INV-101", "INV-102"],
+      "avg_paid_unit_price": 10.0,
+      "max_price_drift_pct": 5.0,
+      "notes": "Contract and Q3 invoices at $10.00; INV-104 at $10.80 is drift."
+    },
+    {
+      "sku": "SKU-1002",
+      "description": "Widget B",
+      "vendor": "Alpha Supplies",
+      "contract_unit_price": 25.0,
+      "last_paid_unit_price": 25.0,
+      "invoice_ids": ["INV-101", "INV-103"],
+      "avg_paid_unit_price": 25.0,
+      "max_price_drift_pct": 5.0,
+      "notes": null
+    },
+    {
+      "sku": "SKU-2001",
+      "description": "Bracket Kit",
+      "vendor": "Beta Parts",
+      "contract_unit_price": null,
+      "last_paid_unit_price": 15.0,
+      "invoice_ids": ["INV-201"],
+      "avg_paid_unit_price": 15.0,
+      "max_price_drift_pct": 5.0,
+      "notes": "No Alpha-style contract row; historical invoice only."
+    }
+  ],
+  "vendor_spend": [
+    {
+      "vendor": "Alpha Supplies",
+      "period": "2024-Q3",
+      "total_spend": 10675.22,
+      "invoice_ids": ["INV-101", "INV-102", "INV-103"],
+      "currency": "USD"
+    }
+  ],
+  "qa_snippets": [
+    {
+      "id": "qa-alpha-q3",
+      "question_contains": ["alpha", "q3", "spend"],
+      "answer": "Alpha Supplies 2024-Q3 spend is $10,675.22 across INV-101, INV-102, and INV-103.",
+      "facts": {
+        "vendor": "Alpha Supplies",
+        "period": "2024-Q3",
+        "total_spend": 10675.22
+      }
+    },
+    {
+      "id": "qa-sku-1001-price",
+      "question_contains": ["sku-1001", "historical", "price", "unit"],
+      "answer": "Historical paid unit price for SKU-1001 from Alpha Supplies is $10.00 (contract and INV-101/INV-102).",
+      "facts": {
+        "sku": "SKU-1001",
+        "vendor": "Alpha Supplies",
+        "unit_price": 10.0
+      }
+    },
+    {
+      "id": "qa-qty-mismatch",
+      "question_contains": ["quantity", "mismatch", "sku-1001"],
+      "answer": "INV-102 billed 500 units of SKU-1001 but the Aug 2024 product report received 450.",
+      "facts": {
+        "sku": "SKU-1001",
+        "invoice_id": "INV-102",
+        "invoice_qty": 500,
+        "report_received_qty": 450
+      }
+    }
+  ]
+}

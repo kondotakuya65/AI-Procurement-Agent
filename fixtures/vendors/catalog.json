@@ -1,0 +1,88 @@
+{
+  "version": 1,
+  "currency": "USD",
+  "notes": [
+    "Aligned with AI-FinOps-RAG: Alpha contract SKU-1001 = $10.00; INV-104 quote drift at $10.80.",
+    "search_vendors ranks by unit_price ascending, then lead_days."
+  ],
+  "offers": [
+    {
+      "offer_id": "OFF-ALPHA-1001",
+      "vendor": "Alpha Supplies",
+      "sku": "SKU-1001",
+      "description": "Widget A",
+      "unit_price": 10.8,
+      "currency": "USD",
+      "moq": 100,
+      "available_qty": 2000,
+      "lead_days": 7,
+      "payment_terms": "Net-30",
+      "notes": "Matches INV-104 billed price (8% over Alpha contract)."
+    },
+    {
+      "offer_id": "OFF-COASTAL-1001",
+      "vendor": "Coastal Widgets",
+      "sku": "SKU-1001",
+      "description": "Widget A (compatible)",
+      "unit_price": 9.95,
+      "currency": "USD",
+      "moq": 400,
+      "available_qty": 1500,
+      "lead_days": 14,
+      "payment_terms": "Net-45",
+      "notes": "Best unit price for 500 qty; longer lead."
+    },
+    {
+      "offer_id": "OFF-BETA-1001",
+      "vendor": "Beta Parts",
+      "sku": "SKU-1001",
+      "description": "Widget A substitute",
+      "unit_price": 11.5,
+      "currency": "USD",
+      "moq": 50,
+      "available_qty": 800,
+      "lead_days": 5,
+      "payment_terms": "Net-30",
+      "notes": "Fast lead, higher price."
+    },
+    {
+      "offer_id": "OFF-NOVA-1001",
+      "vendor": "Nova Components",
+      "sku": "SKU-1001",
+      "description": "Widget A OEM",
+      "unit_price": 10.25,
+      "currency": "USD",
+      "moq": 250,
+      "available_qty": 600,
+      "lead_days": 10,
+      "payment_terms": "Net-30",
+      "notes": "Between contract and Alpha quote."
+    },
+    {
+      "offer_id": "OFF-GAMMA-ALT",
+      "vendor": "Gamma Logistics",
+      "sku": "SKU-1001-ALT",
+      "description": "Widget A-lite (near substitute)",
+      "unit_price": 9.5,
+      "currency": "USD",
+      "moq": 200,
+      "available_qty": 1000,
+      "lead_days": 21,
+      "payment_terms": "Net-60",
+      "notes": "Similar SKU for re-plan when exact SKU stock is thin."
+    },
+    {
+      "offer_id": "OFF-ALPHA-1002",
+      "vendor": "Alpha Supplies",
+      "sku": "SKU-1002",
+      "description": "Widget B",
+      "unit_price": 25.0,
+      "currency": "USD",
+      "moq": 20,
+      "available_qty": 500,
+      "lead_days": 7,
+      "payment_terms": "Net-30",
+      "notes": "Matches FinOps contract unit price."
+    }
+  ]
+}

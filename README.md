@@ -74,7 +74,7 @@ flowchart TB
 │   ├── llm/           provider adapter
 │   └── db/            run persistence (sqlite | postgres)
 ├── frontend/          Next.js workspace
-├── fixtures/          vendors, scenarios, golden evals
+├── fixtures/          vendors/, finops_mock/, scenarios/
 ├── docs/
 ├── docker-compose.yml
 └── .env.example
@@ -119,8 +119,8 @@ docker compose up --build
 ## Roadmap (detailed)
 
 ### Phase A — Foundation
-1. **Done (this commit):** README, docs, env, FastAPI health, Next shell, compose  
-2. Domain fixtures + golden procurement scenarios  
+1. Scaffold: README, docs, env, FastAPI health, Next shell, compose  
+2. **Done (this commit):** vendor catalog, mock FinOps history, golden scenarios  
 3. LLM adapter (`ollama` / `openai` / `anthropic` / `mock`)
 
 ### Phase B — Tools

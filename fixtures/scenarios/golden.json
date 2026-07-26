@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "scenarios": [
+    {
+      "id": "happy_path_sku_1001",
+      "title": "Cost-effective SKU-1001 procurement + negotiation email",
+      "goal": "Find a cost-effective vendor for 500 units of SKU-1001 and draft a negotiation email.",
+      "sku": "SKU-1001",
+      "quantity": 500,
+      "expected_tool_order": [
+        "search_vendors",
+        "query_finops_rag",
+        "draft_email"
+      ],
+      "expected": {
+        "best_vendor": "Coastal Widgets",
+        "best_unit_price": 9.95,
+        "historical_unit_price": 10.0,
+        "negotiate_with": "Alpha Supplies",
+        "alpha_quote": 10.8,
+        "hitl_required": true
+      },
+      "notes": "Coastal is cheapest eligible offer; email may target Alpha to match Coastal / contract $10."
+    },
+    {
+      "id": "zero_vendors_replan",
+      "title": "Unknown SKU triggers similar-SKU suggestion",
+      "goal": "Procure 100 units of SKU-9999.",
+      "sku": "SKU-9999",
+      "quantity": 100,
+      "expected_tool_order": [
+        "search_vendors",
+        "search_vendors"
+      ],
+      "expected": {
+        "first_search_empty": true,
+        "suggested_sku": "SKU-1001-ALT",
+        "hitl_required": false
+      },
+      "notes": "Second search may use similar SKU from catalog notes / ALT offerings."
+    },
+    {
+      "id": "price_drift_review_inv_104",
+      "title": "Review INV-104 price drift against PO-4452",
+      "goal": "Should we accept INV-104 against the Alpha contract and PO-4452?",
+      "sku": "SKU-1001",
+      "quantity": null,
+      "expected_tool_order": [
+        "review_invoice"
+      ],
+      "expected": {
+        "invoice_id": "INV-104",
+        "recommendation": "Reject",
+        "drift_pct": 8.0,
+        "hitl_required": false
+      },
+      "notes": "Mirrors FinOps stretch demo; agent can call review_invoice without drafting email."
+    }
+  ]
+}

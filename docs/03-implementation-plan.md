@@ -14,10 +14,12 @@ Fine-grained checklist (one or few commits each).
 
 **Accept:** `GET /api/health` OK; UI loads and shows health.
 
-### A2 — Fixtures
-- [ ] Vendor catalog JSON (SKU-1001 offers, alternatives)  
-- [ ] Historical price fixtures for mock FinOps  
-- [ ] Golden scenario definitions  
+### A2 — Fixtures ✅
+- [x] Vendor catalog JSON (SKU-1001 offers, alternatives)  
+- [x] Historical price fixtures for mock FinOps + INV-104 review cases  
+- [x] Golden scenario definitions + `app.fixtures` loader + tests  
+
+**Accept:** pytest fixture suite green; Coastal $9.95 ranks first for qty 500; INV-104 → Reject.  
 
 ### A3 — LLM adapter
 - [ ] `ollama` / `openai` / `anthropic` / `mock`  
