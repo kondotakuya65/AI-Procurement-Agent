@@ -120,8 +120,8 @@ docker compose up --build
 
 ### Phase A — Foundation
 1. Scaffold: README, docs, env, FastAPI health, Next shell, compose  
-2. **Done (this commit):** vendor catalog, mock FinOps history, golden scenarios  
-3. LLM adapter (`ollama` / `openai` / `anthropic` / `mock`)
+2. Vendor catalog, mock FinOps history, golden scenarios  
+3. **Done (this commit):** LLM adapter (`ollama` / `openai` / `anthropic` / `mock`)
 
 ### Phase B — Tools
 4. Tool contracts / `ToolResult` shapes  

@@ -10,5 +10,6 @@ def test_health_ok():
     body = res.json()
     assert body["status"] == "ok"
     assert body["service"] == "ai-procurement-agent"
-    assert "llm_provider" in body
+    assert body["llm_provider"] in {"ollama", "openai", "anthropic", "mock"}
+    assert "llm_model" in body
     assert "finops_mode" in body

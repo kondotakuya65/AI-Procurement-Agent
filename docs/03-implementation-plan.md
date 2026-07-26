@@ -21,9 +21,12 @@ Fine-grained checklist (one or few commits each).
 
 **Accept:** pytest fixture suite green; Coastal $9.95 ranks first for qty 500; INV-104 → Reject.  
 
-### A3 — LLM adapter
-- [ ] `ollama` / `openai` / `anthropic` / `mock`  
-- [ ] Shared settings + timeouts  
+### A3 — LLM adapter ✅
+- [x] `ollama` / `openai` / `anthropic` / `mock` via `app.llm.provider`  
+- [x] Shared settings + `LLM_TIMEOUT_SECONDS`  
+- [x] Unit tests with mocked HTTP  
+
+**Accept:** `get_llm_client()` selects provider; missing API keys raise; mock drafts email text.
 
 ## Phase B — Tools
 
