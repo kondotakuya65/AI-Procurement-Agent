@@ -77,6 +77,14 @@ export type StreamEvent =
   | { type: "status"; run_id?: string; status?: string; goal?: string; decision?: string; replay?: boolean }
   | { type: "node"; run_id?: string; node?: string }
   | {
+      type: "progress";
+      run_id?: string;
+      message?: string;
+      node?: string;
+      phase?: string;
+      data?: Record<string, unknown>;
+    }
+  | {
       type: "trace";
       run_id?: string;
       kind?: string;
@@ -88,6 +96,22 @@ export type StreamEvent =
   | { type: "interrupt"; run_id?: string; interrupt?: RunInterrupt; replay?: boolean }
   | ({ type: "done" } & Partial<RunSnapshot> & { replay?: boolean })
   | { type: "error"; run_id?: string; error?: string };
+
+/**
+ * SSE must hit FastAPI directly. Next.js rewrites buffer proxied streams, so the
+ * UI would sit on "Starting agent…" until the whole Ollama run finished.
+ */
+function streamBaseUrl(): string {
+  const raw =
+    process.env.NEXT_PUBLIC_API_BASE ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    "http://localhost:8100";
+  return raw.replace(/\/$/, "");
+}
+
+function streamUrl(path: string): string {
+  return `${streamBaseUrl()}${path.startsWith("/") ? path : `/${path}`}`;
+}
 
 export async function fetchHealth(): Promise<Health> {
   const res = await fetch("/api/health");
@@ -113,10 +137,9 @@ async function* readSse(res: Response): AsyncGenerator<StreamEvent> {
     const parts = buffer.split("\n\n");
     buffer = parts.pop() ?? "";
     for (const part of parts) {
-      const line = part
-        .split("\n")
-        .map((l) => l.trim())
-        .find((l) => l.startsWith("data:"));
+      const lines = part.split("\n").map((l) => l.trim());
+      // Ignore SSE comments (": connected")
+      const line = lines.find((l) => l.startsWith("data:"));
       if (!line) continue;
       const payload = line.slice("data:".length).trim();
       if (!payload) continue;
@@ -126,9 +149,12 @@ async function* readSse(res: Response): AsyncGenerator<StreamEvent> {
 }
 
 export async function* streamCreateRun(goal: string): AsyncGenerator<StreamEvent> {
-  const res = await fetch("/api/runs/stream", {
+  const res = await fetch(streamUrl("/api/runs/stream"), {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "text/event-stream",
+    },
     body: JSON.stringify({ goal }),
   });
   yield* readSse(res);
@@ -139,9 +165,12 @@ export async function* streamResumeRun(
   decision: "approve" | "edit" | "reject",
   editedDraft?: string,
 ): AsyncGenerator<StreamEvent> {
-  const res = await fetch(`/api/runs/${runId}/resume/stream`, {
+  const res = await fetch(streamUrl(`/api/runs/${runId}/resume/stream`), {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "text/event-stream",
+    },
     body: JSON.stringify({
       decision,
       edited_draft: editedDraft,

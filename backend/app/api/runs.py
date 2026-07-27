@@ -31,8 +31,12 @@ def _sse(event: dict[str, Any]) -> str:
 
 
 def _sse_stream(events: Iterator[dict[str, Any]]) -> Iterator[str]:
+    # Comment frame helps some proxies flush the response immediately.
+    yield ": connected\n\n"
     for event in events:
         yield _sse(event)
+        # Encourage chunked flush between LangGraph steps
+        yield ": ping\n\n"
 
 
 @router.post("")

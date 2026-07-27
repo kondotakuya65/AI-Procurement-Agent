@@ -136,6 +136,13 @@ def reflect_on_draft(
     if review["passed"]:
         return subject, body, meta
 
+    from app.agent.progress import emit_progress
+
+    emit_progress(
+        f"Rewriting weak draft: {review.get('critique')}",
+        node="draft_email",
+        phase="rewrite",
+    )
     new_subject, new_body = rewrite_draft(
         subject=subject,
         body=body,

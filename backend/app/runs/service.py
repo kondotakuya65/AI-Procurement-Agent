@@ -223,17 +223,29 @@ def list_runs(limit: int = 20) -> list[dict[str, Any]]:
     return [{"run_id": r.run_id, "goal": r.goal, "status": r.status, "created_at": r.created_at} for r in items]
 
 
-def _sse_events_from_updates(
-    run_id: str,
-    chunks,
-) -> Any:
-    """Yield public event dicts from LangGraph stream_mode=updates chunks."""
+def _sse_events_from_stream(run_id: str, chunks) -> Any:
+    """Yield public event dicts from LangGraph updates+custom stream."""
     for chunk in chunks:
-        if not isinstance(chunk, dict):
+        mode = "updates"
+        data = chunk
+        if isinstance(chunk, tuple) and len(chunk) == 2:
+            mode, data = chunk
+
+        if mode == "custom" and isinstance(data, dict):
+            yield {
+                "type": "progress",
+                "run_id": run_id,
+                "message": data.get("message") or data.get("phase") or "working…",
+                "node": data.get("node"),
+                "phase": data.get("phase"),
+                "data": data.get("data"),
+            }
             continue
-        if "__interrupt__" in chunk:
-            raw = chunk["__interrupt__"]
-            # May be tuple/list of Interrupt objects
+
+        if not isinstance(data, dict):
+            continue
+        if "__interrupt__" in data:
+            raw = data["__interrupt__"]
             items = raw if isinstance(raw, (list, tuple)) else [raw]
             value = None
             if items:
@@ -246,7 +258,7 @@ def _sse_events_from_updates(
                 "interrupt": interrupt,
             }
             continue
-        for node_name, update in chunk.items():
+        for node_name, update in data.items():
             if not isinstance(update, dict):
                 continue
             yield {
@@ -291,9 +303,9 @@ def iter_create_run_events(goal: str):
         chunks = graph.stream(
             initial_state(goal),
             config=_config(run_id),
-            stream_mode="updates",
+            stream_mode=["updates", "custom"],
         )
-        for event in _sse_events_from_updates(run_id, chunks):
+        for event in _sse_events_from_stream(run_id, chunks):
             if event.get("type") == "interrupt":
                 saw_interrupt = True
             yield event
@@ -342,9 +354,9 @@ def iter_resume_run_events(run_id: str, body: HitlResumeInput):
         chunks = graph.stream(
             resume_command(body.decision.value, body.edited_draft),
             config=_config(run_id),
-            stream_mode="updates",
+            stream_mode=["updates", "custom"],
         )
-        for event in _sse_events_from_updates(run_id, chunks):
+        for event in _sse_events_from_stream(run_id, chunks):
             yield event
     except Exception as exc:  # noqa: BLE001
         record.status = "failed"

@@ -108,6 +108,9 @@ npm run dev
 
 Open http://localhost:3001. LangGraph tools / HITL land in later phases (see roadmap).
 
+> **SSE note:** set `NEXT_PUBLIC_API_BASE=http://localhost:8100` in `frontend/.env.local`
+> so live traces bypass the Next.js proxy (which buffers streamed responses).
+
 ```bash
 # Optional: docker compose (API :8100, UI :3001, Postgres host :5433)
 cp .env.example .env

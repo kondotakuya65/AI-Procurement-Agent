@@ -90,7 +90,7 @@ class MockLLMClient:
 
 
 class OllamaClient:
-    def __init__(self, base_url: str, model: str, timeout: float = 45.0) -> None:
+    def __init__(self, base_url: str, model: str, timeout: float = 180.0) -> None:
         self.base_url = base_url.rstrip("/")
         self.model = model
         self.timeout = timeout

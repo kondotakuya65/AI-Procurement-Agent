@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any, Literal
 
 from app.agent.parse import extract_invoice_id, extract_quantity, extract_sku
+from app.agent.progress import emit_progress
 from app.agent.replan import suggest_similar_sku
 from app.agent.state import ProcurementState, TraceEvent
 from app.llm.provider import get_llm_client
@@ -112,6 +113,12 @@ def search_vendors_node(state: ProcurementState) -> dict[str, Any]:
             "error": state.get("error") or "Missing SKU or quantity for vendor search.",
         }
 
+    emit_progress(
+        f"Searching vendors for {sku} qty {quantity}…",
+        node="search_vendors",
+        phase="start",
+    )
+
     result = search_vendors(
         sku=sku,
         quantity=int(quantity),
@@ -203,6 +210,12 @@ def query_finops_node(state: ProcurementState) -> dict[str, Any]:
         )
     else:
         question = state.get("goal") or "Summarize recent vendor spend."
+
+    emit_progress(
+        f"Querying FinOps history for {sku or 'goal'}…",
+        node="query_finops",
+        phase="start",
+    )
 
     result = query_finops_rag(question=question, sku=sku)
     degraded = False
@@ -330,6 +343,11 @@ def draft_email_node(state: ProcurementState) -> dict[str, Any]:
             f"Re-planned from {state.get('original_sku')} to {state.get('suggested_sku')}."
         )
 
+    emit_progress(
+        "Calling LLM to draft negotiation email (Ollama can take a while)…",
+        node="draft_email",
+        phase="llm_draft",
+    )
     result = draft_email(
         vendor=vendor,
         sku=sku,
@@ -341,6 +359,11 @@ def draft_email_node(state: ProcurementState) -> dict[str, Any]:
         llm=get_llm_client(),
     )
     if result.status == ToolStatus.ERROR:
+        emit_progress(
+            "Draft failed — retrying LLM…",
+            node="draft_email",
+            phase="llm_retry",
+        )
         result = draft_email(
             vendor=vendor,
             sku=sku,

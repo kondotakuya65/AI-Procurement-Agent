@@ -40,6 +40,7 @@ export function Workspace() {
   const [banner, setBanner] = useState<{ text: string; kind: "ok" | "error" } | null>(
     null,
   );
+  const [liveActivity, setLiveActivity] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -70,6 +71,32 @@ export function Workspace() {
     if (event.type === "status" && event.run_id) {
       setRunId(event.run_id);
       if (event.status) setStatus(event.status);
+      if (event.status === "running") {
+        setLiveActivity(
+          event.decision
+            ? `Resuming after HITL (${event.decision})…`
+            : "Agent started — streaming steps…",
+        );
+      }
+    }
+    if (event.type === "progress") {
+      setLiveActivity(event.message || "Working…");
+      setStatus(event.node ? `running:${event.node}` : "running");
+      if (appendTraces && event.message) {
+        setTraces((prev) => [
+          ...prev,
+          {
+            kind: "progress",
+            node: event.node || "agent",
+            message: event.message,
+            data: event.data,
+          },
+        ]);
+      }
+    }
+    if (event.type === "node" && event.node) {
+      setLiveActivity(`Finished node: ${event.node}`);
+      setStatus(`running:${event.node}`);
     }
     if (event.type === "trace" && appendTraces) {
       setTraces((prev) => [
@@ -85,10 +112,12 @@ export function Workspace() {
     if (event.type === "interrupt") {
       setInterrupt(event.interrupt || null);
       setStatus("awaiting_hitl");
+      setLiveActivity(null);
     }
     if (event.type === "error") {
       setBanner({ text: event.error || "Run failed", kind: "error" });
       setStatus("failed");
+      setLiveActivity(null);
     }
     if (event.type === "done") {
       setRunId(event.run_id || null);
@@ -96,8 +125,10 @@ export function Workspace() {
       setState(event.state || null);
       setInterrupt(event.interrupt || null);
       setSummary(event.summary || event.state?.summary || null);
+      setLiveActivity(null);
       if (event.state?.trace?.length) {
-        setTraces(event.state.trace);
+        // Keep progress lines already shown; merge only if empty
+        setTraces((prev) => (prev.length ? prev : event.state?.trace || []));
       }
     }
   }
@@ -111,6 +142,7 @@ export function Workspace() {
     setSummary(null);
     setRunId(null);
     setStatus("running");
+    setLiveActivity("Starting agent…");
 
     try {
       for await (const event of streamCreateRun(goal.trim())) {
@@ -145,6 +177,13 @@ export function Workspace() {
     setBusy(true);
     setBanner(null);
     setStatus("running");
+    setLiveActivity(
+      decision === "approve"
+        ? "Approving draft…"
+        : decision === "reject"
+          ? "Rejecting draft…"
+          : "Saving edited draft…",
+    );
     try {
       for await (const event of streamResumeRun(runId, decision, editedDraft)) {
         applyStreamEvent(event);
@@ -221,7 +260,7 @@ export function Workspace() {
             onReject={() => onResume("reject")}
             onEdit={(text) => onResume("edit", text)}
           />
-          <TraceLog events={traces} busy={busy} />
+          <TraceLog events={traces} busy={busy} liveActivity={liveActivity} />
         </div>
         <StatePanel
           runId={runId}

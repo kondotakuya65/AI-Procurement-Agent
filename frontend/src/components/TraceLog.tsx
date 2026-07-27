@@ -5,6 +5,7 @@ import type { TraceEvent } from "@/lib/api";
 type TraceLogProps = {
   events: TraceEvent[];
   busy: boolean;
+  liveActivity?: string | null;
 };
 
 function kindClass(kind?: string) {
@@ -17,12 +18,14 @@ function kindClass(kind?: string) {
       return "text-emerald-300";
     case "status":
       return "text-violet-300";
+    case "progress":
+      return "text-cyan-300";
     default:
       return "text-[var(--muted)]";
   }
 }
 
-export function TraceLog({ events, busy }: TraceLogProps) {
+export function TraceLog({ events, busy, liveActivity }: TraceLogProps) {
   return (
     <section className="flex min-h-[280px] flex-col">
       <div className="mb-3 flex items-baseline justify-between">
@@ -34,8 +37,13 @@ export function TraceLog({ events, busy }: TraceLogProps) {
           {busy ? " · live" : ""}
         </span>
       </div>
+      {busy && liveActivity ? (
+        <p className="mb-2 animate-pulse rounded-md border border-cyan-800/50 bg-cyan-950/30 px-3 py-2 font-mono text-xs text-cyan-200">
+          {liveActivity}
+        </p>
+      ) : null}
       <div className="flex-1 space-y-2 overflow-y-auto rounded-lg border border-[var(--border)] bg-[var(--panel)]/70 p-3">
-        {events.length === 0 ? (
+        {events.length === 0 && !liveActivity ? (
           <p className="text-sm text-[var(--muted)]">
             Run a goal to stream agent steps here.
           </p>

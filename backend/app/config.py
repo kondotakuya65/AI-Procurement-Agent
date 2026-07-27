@@ -10,7 +10,9 @@ def _repo_root() -> Path:
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=(".env", "../.env"),
+        # Load repo-root .env first, then local backend/.env so local wins.
+        # (uvicorn is normally started from backend/)
+        env_file=("../.env", ".env"),
         env_file_encoding="utf-8",
         extra="ignore",
     )
@@ -28,7 +30,8 @@ class Settings(BaseSettings):
     openai_model: str = "gpt-4o-mini"
     anthropic_api_key: str = ""
     anthropic_model: str = "claude-3-5-haiku-latest"
-    llm_timeout_seconds: float = 45.0
+    # Local Ollama on CPU often needs 2–3+ minutes for longer drafts
+    llm_timeout_seconds: float = 180.0
 
     finops_mode: str = "mock"  # live | mock
     finops_api_url: str = "http://localhost:8000"

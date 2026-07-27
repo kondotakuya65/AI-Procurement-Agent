@@ -59,9 +59,13 @@ def test_create_run_stream_emits_traces_and_interrupt(client: TestClient):
     events = _parse_sse(body)
     types = [e["type"] for e in events]
     assert types[0] == "status"
+    assert "progress" in types
     assert "trace" in types
     assert "interrupt" in types
     assert types[-1] == "done"
+
+    progress_msgs = [e.get("message", "") for e in events if e["type"] == "progress"]
+    assert any("draft" in m.lower() or "llm" in m.lower() or "vendor" in m.lower() for m in progress_msgs)
 
     traces = [e for e in events if e["type"] == "trace"]
     nodes = [t["node"] for t in traces]

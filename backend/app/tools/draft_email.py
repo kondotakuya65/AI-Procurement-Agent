@@ -142,8 +142,21 @@ def draft_email(
             settings.email_reflection if reflection is None else reflection
         )
 
+        from app.agent.progress import emit_progress
+
+        emit_progress(
+            f"LLM drafting email to {inp.vendor}…",
+            node="draft_email",
+            phase="writer",
+        )
         raw = client.complete(SYSTEM_PROMPT, _build_user_prompt(inp))
         subject, body = parse_email_draft(raw, inp)
+        if use_reflection:
+            emit_progress(
+                "Reviewer checking draft quality…",
+                node="draft_email",
+                phase="reviewer",
+            )
         subject, body, reflection_meta = reflect_on_draft(
             subject=subject,
             body=body,
@@ -151,6 +164,12 @@ def draft_email(
             llm=client,
             enabled=use_reflection,
         )
+        if reflection_meta.get("rewritten"):
+            emit_progress(
+                "Reviewer requested rewrite — revised draft ready.",
+                node="draft_email",
+                phase="rewritten",
+            )
         data = DraftEmailData(
             vendor=inp.vendor,
             subject=subject,

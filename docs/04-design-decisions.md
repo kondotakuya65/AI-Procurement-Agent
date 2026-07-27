@@ -18,6 +18,7 @@ Enterprise safety. MVP writes `outbox/` or DB rows; no SMTP.
 
 ## SSE before WebSockets
 Enough for Thought/Action/Observation streaming; lower complexity.
+Live mid-node status uses LangGraph **custom stream** events (`progress`) over the same SSE channel — no WebSocket required for Ollama wait UX.
 
 ## Same LLM env knobs as sibling repos
 `LLM_PROVIDER=ollama|openai|anthropic|mock` — recruiters already know the pattern.
