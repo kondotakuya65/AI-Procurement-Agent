@@ -17,7 +17,40 @@ class MockLLMClient:
     """Deterministic replies for tests / offline demos."""
 
     def complete(self, system: str, user: str) -> str:
+        sys_l = system.lower()
         lower = user.lower()
+
+        if "communications reviewer" in sys_l or "verdict:" in sys_l:
+            # Heuristic path usually short-circuits; if called, pass strong drafts
+            if "too short" in lower or len(user.strip()) < 80:
+                return "VERDICT: REWRITE\nCRITIQUE: Expand with a clear pricing ask."
+            return "VERDICT: PASS\nCRITIQUE: Clear, professional, and factual."
+
+        if "revising a previous draft" in sys_l or "reviewer critique:" in lower:
+            vendor = "Vendor"
+            sku = "SKU-1001"
+            quoted = "10.80"
+            target = "10.00"
+            for line in user.splitlines():
+                if line.lower().startswith("vendor:"):
+                    vendor = line.split(":", 1)[1].strip() or vendor
+                elif line.lower().startswith("sku:"):
+                    sku = line.split(":", 1)[1].strip() or sku
+                elif line.lower().startswith("quoted unit price:"):
+                    quoted = line.split(":", 1)[1].strip().lstrip("$") or quoted
+                elif line.lower().startswith("target unit price:"):
+                    raw = line.split(":", 1)[1].strip()
+                    if raw and "not specified" not in raw.lower():
+                        target = raw.lstrip("$")
+            return (
+                f"Subject: Revised pricing request for {sku}\n\n"
+                f"Dear {vendor},\n\n"
+                f"Thank you for quoting ${quoted}/unit on {sku}. Based on our "
+                f"contract/historical benchmark near ${target}/unit and competing "
+                f"offers, please confirm whether you can revise to that level.\n\n"
+                "Regards,\nProcurement"
+            )
+
         if "draft" in lower and ("email" in lower or "intent:" in lower):
             vendor = "Vendor"
             sku = "SKU-1001"

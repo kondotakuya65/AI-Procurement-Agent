@@ -1,10 +1,11 @@
-"""draft_email — LLM-backed professional negotiation draft."""
+"""draft_email — LLM-backed professional negotiation draft (+ optional reflection)."""
 
 from __future__ import annotations
 
 import re
 import time
 
+from app.config import get_settings
 from app.llm.provider import LLMClient, get_llm_client
 from app.tools.contracts import (
     DraftEmailData,
@@ -12,6 +13,7 @@ from app.tools.contracts import (
     ToolName,
     ToolResult,
 )
+from app.tools.email_reflection import reflect_on_draft
 
 SYSTEM_PROMPT = """You are a professional procurement specialist writing vendor emails.
 Rules:
@@ -115,6 +117,7 @@ def draft_email(
     intent: str = "negotiate_price",
     context: str = "",
     llm: LLMClient | None = None,
+    reflection: bool | None = None,
 ) -> ToolResult[DraftEmailData]:
     started = time.perf_counter()
     try:
@@ -134,21 +137,40 @@ def draft_email(
             )
 
         client = llm or get_llm_client()
+        settings = get_settings()
+        use_reflection = (
+            settings.email_reflection if reflection is None else reflection
+        )
+
         raw = client.complete(SYSTEM_PROMPT, _build_user_prompt(inp))
         subject, body = parse_email_draft(raw, inp)
+        subject, body, reflection_meta = reflect_on_draft(
+            subject=subject,
+            body=body,
+            inp=inp,
+            llm=client,
+            enabled=use_reflection,
+        )
         data = DraftEmailData(
             vendor=inp.vendor,
             subject=subject,
             body=body,
             intent=inp.intent,
+            reflection=reflection_meta,
         )
         latency_ms = (time.perf_counter() - started) * 1000
+        reflect_note = ""
+        if reflection_meta.get("enabled"):
+            if reflection_meta.get("rewritten"):
+                reflect_note = " Reviewer requested rewrite; revised draft ready."
+            else:
+                reflect_note = " Reviewer PASS."
         return ToolResult.ok(
             ToolName.DRAFT_EMAIL,
             data,
             observation=(
                 f"Drafted email to {data.vendor}: “{data.subject}” "
-                f"({len(data.body)} chars). Awaiting HITL approval."
+                f"({len(data.body)} chars).{reflect_note} Awaiting HITL approval."
             ),
             latency_ms=latency_ms,
         )

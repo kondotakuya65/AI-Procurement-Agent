@@ -200,6 +200,10 @@ class DraftEmailData(BaseModel):
     subject: str
     body: str
     intent: str
+    reflection: dict[str, Any] | None = Field(
+        default=None,
+        description="Optional writer→reviewer reflection metadata.",
+    )
 
 
 # --- HITL resume (used by API later; defined here for one contract home) ---

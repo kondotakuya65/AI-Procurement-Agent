@@ -111,8 +111,10 @@ Fine-grained checklist (one or few commits each).
 
 **Accept:** all golden scenarios pass offline; CI workflow present.
 
-### F2 — Reflection stretch
-- [ ] Reviewer LLM rewrites email if weak  
+### F2 — Reflection stretch ✅
+- [x] Reviewer LLM rewrites email if weak (`EMAIL_REFLECTION`, writer→reviewer)  
+
+**Accept:** weak draft → rewrite; strong mock draft → PASS; flag can disable.
 
 ### F3 — Integrations stretch
 - [ ] Optional live search flag  

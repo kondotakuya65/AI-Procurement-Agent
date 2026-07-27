@@ -38,6 +38,9 @@ class Settings(BaseSettings):
     fixtures_dir: str = str(_repo_root() / "fixtures")
     outbox_dir: str = "./outbox"
 
+    # Stretch: writer → reviewer loop on draft_email
+    email_reflection: bool = True
+
 
 @lru_cache
 def get_settings() -> Settings:

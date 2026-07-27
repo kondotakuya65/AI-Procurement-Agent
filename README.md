@@ -146,8 +146,8 @@ docker compose up --build
 MVP ship line: through **E2** (HITL UI).  
 
 ### Phase F — Quality + stretch
-16. **Done (this commit):** Golden eval + CI  
-17. Stretch: email reflection loop (writer → reviewer)  
+16. Golden eval + CI  
+17. **Done (this commit):** Stretch: email reflection loop (writer → reviewer)  
 18. Stretch: optional live vendor search flag; compose with live FinOps  
 
 ---

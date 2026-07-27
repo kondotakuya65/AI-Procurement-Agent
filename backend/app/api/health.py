@@ -24,5 +24,6 @@ def health() -> dict:
         "llm_model": model,
         "finops_mode": settings.finops_mode,
         "finops_api_url": settings.finops_api_url,
+        "email_reflection": settings.email_reflection,
         "database_url_scheme": settings.database_url.split(":", 1)[0],
     }
