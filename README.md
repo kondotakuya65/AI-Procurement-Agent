@@ -140,8 +140,10 @@ docker compose up --build
 13. **Done (this commit):** SSE thought / action / observation stream
 
 ### Phase E — UI
-14. **Done (this commit):** Workspace: goal input, live step log, state panel  
-15. HITL panel: draft preview + Approve / Edit / Reject  
+14. Workspace: goal input, live step log, state panel  
+15. **Done (this commit):** HITL panel: draft preview + Approve / Edit / Reject  
+
+MVP ship line: through **E2** (HITL UI).  
 
 ### Phase F — Quality + stretch
 16. Golden eval + CI  

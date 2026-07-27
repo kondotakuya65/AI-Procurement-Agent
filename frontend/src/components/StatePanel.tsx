@@ -8,6 +8,7 @@ type StatePanelProps = {
   state: RunState | null;
   interrupt: RunInterrupt | null;
   summary: string | null;
+  hideDraftPreview?: boolean;
 };
 
 function Row({ label, value }: { label: string; value: React.ReactNode }) {
@@ -26,6 +27,7 @@ export function StatePanel({
   state,
   interrupt,
   summary,
+  hideDraftPreview = false,
 }: StatePanelProps) {
   return (
     <section>
@@ -72,12 +74,12 @@ export function StatePanel({
                 label="interrupt"
                 value={
                   <span className="text-amber-200">
-                    {interrupt.type || "paused"} — approval UI in next step
+                    {interrupt.type || "paused"} — use HITL panel
                   </span>
                 }
               />
             ) : null}
-            {state?.email_draft ? (
+            {!hideDraftPreview && state?.email_draft ? (
               <div className="mt-3 border-t border-[var(--border)] pt-3">
                 <p className="mb-1 font-mono text-xs text-[var(--muted)]">
                   draft preview

@@ -3,16 +3,27 @@
 import { useEffect, useState } from "react";
 import { GoalPanel } from "@/components/GoalPanel";
 import { Header } from "@/components/Header";
+import { HitlPanel } from "@/components/HitlPanel";
 import { StatePanel } from "@/components/StatePanel";
 import { TraceLog } from "@/components/TraceLog";
 import {
   DEMO_GOAL,
   fetchHealth,
   streamCreateRun,
+  streamResumeRun,
+  type EmailDraft,
   type RunInterrupt,
   type RunState,
+  type StreamEvent,
   type TraceEvent,
 } from "@/lib/api";
+
+function draftFromInterruptOrState(
+  interrupt: RunInterrupt | null,
+  state: RunState | null,
+): EmailDraft | null {
+  return interrupt?.draft || state?.email_draft || null;
+}
 
 export function Workspace() {
   const [healthy, setHealthy] = useState<boolean | null>(null);
@@ -54,6 +65,43 @@ export function Workspace() {
     };
   }, []);
 
+  function applyStreamEvent(event: StreamEvent, opts?: { appendTraces?: boolean }) {
+    const appendTraces = opts?.appendTraces ?? true;
+    if (event.type === "status" && event.run_id) {
+      setRunId(event.run_id);
+      if (event.status) setStatus(event.status);
+    }
+    if (event.type === "trace" && appendTraces) {
+      setTraces((prev) => [
+        ...prev,
+        {
+          kind: event.kind,
+          node: event.node,
+          message: event.message,
+          data: event.data,
+        },
+      ]);
+    }
+    if (event.type === "interrupt") {
+      setInterrupt(event.interrupt || null);
+      setStatus("awaiting_hitl");
+    }
+    if (event.type === "error") {
+      setBanner({ text: event.error || "Run failed", kind: "error" });
+      setStatus("failed");
+    }
+    if (event.type === "done") {
+      setRunId(event.run_id || null);
+      setStatus(event.status || null);
+      setState(event.state || null);
+      setInterrupt(event.interrupt || null);
+      setSummary(event.summary || event.state?.summary || null);
+      if (event.state?.trace?.length) {
+        setTraces(event.state.trace);
+      }
+    }
+  }
+
   async function onSubmit() {
     setBusy(true);
     setBanner(null);
@@ -66,45 +114,15 @@ export function Workspace() {
 
     try {
       for await (const event of streamCreateRun(goal.trim())) {
-        if (event.type === "status" && event.run_id) {
-          setRunId(event.run_id);
-          setStatus(event.status || "running");
-        }
-        if (event.type === "trace") {
-          setTraces((prev) => [
-            ...prev,
-            {
-              kind: event.kind,
-              node: event.node,
-              message: event.message,
-              data: event.data,
-            },
-          ]);
-        }
-        if (event.type === "interrupt") {
-          setInterrupt(event.interrupt || null);
-          setStatus("awaiting_hitl");
-        }
-        if (event.type === "error") {
-          setBanner({ text: event.error || "Run failed", kind: "error" });
-          setStatus("failed");
-        }
+        applyStreamEvent(event);
         if (event.type === "done") {
-          setRunId(event.run_id || null);
-          setStatus(event.status || null);
-          setState(event.state || null);
-          setInterrupt(event.interrupt || null);
-          setSummary(event.summary || event.state?.summary || null);
-          if (event.state?.trace?.length) {
-            setTraces(event.state.trace);
-          }
           if (event.status === "awaiting_hitl") {
             setBanner({
-              text: "Agent paused for human approval — HITL panel lands in E2.",
+              text: "Agent paused — review the draft and Approve / Edit / Reject.",
               kind: "ok",
             });
           } else if (event.status === "completed") {
-            setBanner({ text: "Run completed.", kind: "ok" });
+            setBanner({ text: "Run completed (no HITL required).", kind: "ok" });
           }
         }
       }
@@ -118,6 +136,52 @@ export function Workspace() {
       setBusy(false);
     }
   }
+
+  async function onResume(
+    decision: "approve" | "edit" | "reject",
+    editedDraft?: string,
+  ) {
+    if (!runId) return;
+    setBusy(true);
+    setBanner(null);
+    setStatus("running");
+    try {
+      for await (const event of streamResumeRun(runId, decision, editedDraft)) {
+        applyStreamEvent(event);
+        if (event.type === "done") {
+          const hitl = event.state?.hitl_status;
+          if (hitl === "approved") {
+            setBanner({
+              text: event.state?.outbox_path
+                ? `Approved — wrote outbox ${event.state.outbox_path}`
+                : "Approved.",
+              kind: "ok",
+            });
+          } else if (hitl === "edited") {
+            setBanner({
+              text: "Edited draft saved to outbox.",
+              kind: "ok",
+            });
+          } else if (hitl === "rejected") {
+            setBanner({ text: "Rejected — email not sent.", kind: "ok" });
+          } else {
+            setBanner({ text: "Run completed.", kind: "ok" });
+          }
+        }
+      }
+    } catch (err) {
+      setBanner({
+        text: err instanceof Error ? err.message : "Resume failed",
+        kind: "error",
+      });
+      setStatus("failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const awaitingHitl = status === "awaiting_hitl" && !!interrupt;
+  const hitlDraft = draftFromInterruptOrState(interrupt, state);
 
   return (
     <div className="min-h-screen">
@@ -147,6 +211,16 @@ export function Workspace() {
             onSubmit={onSubmit}
             onUseDemo={() => setGoal(DEMO_GOAL)}
           />
+          <HitlPanel
+            open={awaitingHitl}
+            busy={busy}
+            draft={hitlDraft}
+            vendor={interrupt?.vendor || hitlDraft?.vendor}
+            prompt={interrupt?.prompt}
+            onApprove={() => onResume("approve")}
+            onReject={() => onResume("reject")}
+            onEdit={(text) => onResume("edit", text)}
+          />
           <TraceLog events={traces} busy={busy} />
         </div>
         <StatePanel
@@ -155,6 +229,7 @@ export function Workspace() {
           state={state}
           interrupt={interrupt}
           summary={summary}
+          hideDraftPreview={awaitingHitl}
         />
       </main>
     </div>

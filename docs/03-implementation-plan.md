@@ -98,8 +98,10 @@ Fine-grained checklist (one or few commits each).
 
 **Accept:** UI streams SSE traces; state panel shows best/negotiate/draft preview.
 
-### E2 — HITL panel
-- [ ] Draft preview + Approve / Edit / Reject  
+### E2 — HITL panel ✅
+- [x] Draft preview + Approve / Edit / Reject (SSE resume)  
+
+**Accept:** paused run shows HITL panel; Approve writes outbox; Reject completes without file.
 
 ## Phase F — Quality + stretch
 
