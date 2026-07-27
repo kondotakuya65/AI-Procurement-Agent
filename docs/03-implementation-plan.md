@@ -66,9 +66,12 @@ Fine-grained checklist (one or few commits each).
 
 **Accept:** golden goal → Coastal $9.95 best, Alpha $10.80 negotiate, email draft + HITL pending.
 
-### C3 — Re-plan / errors
-- [ ] Zero vendors → similar SKU suggestion  
-- [ ] Tool failure retry / degrade  
+### C3 — Re-plan / errors ✅
+- [x] Zero vendors → similar SKU suggestion (`replan_sku` → search again)  
+- [x] Tool failure retry / FinOps degrade  
+- [x] Invoice-only goals → `review_invoice` branch  
+
+**Accept:** SKU-9999 → SKU-1001-ALT + Gamma offer; INV-104 goal → Reject without vendor search.
 
 ### C4 — HITL
 - [ ] Interrupt before send; resume approve/edit/reject  

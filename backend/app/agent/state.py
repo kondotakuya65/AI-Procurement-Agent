@@ -35,6 +35,14 @@ class ProcurementState(TypedDict):
     summary: NotRequired[str | None]
     error: NotRequired[str | None]
 
+    # C3 re-plan / retries
+    search_attempts: NotRequired[int]
+    replan_done: NotRequired[bool]
+    suggested_sku: NotRequired[str | None]
+    original_sku: NotRequired[str | None]
+    review_result: NotRequired[dict[str, Any] | None]
+    finops_degraded: NotRequired[bool]
+
     messages: Annotated[list[str], operator.add]
     trace: Annotated[list[TraceEvent], operator.add]
 
@@ -57,6 +65,12 @@ def initial_state(goal: str) -> ProcurementState:
         "hitl_decision": None,
         "summary": None,
         "error": None,
+        "search_attempts": 0,
+        "replan_done": False,
+        "suggested_sku": None,
+        "original_sku": None,
+        "review_result": None,
+        "finops_degraded": False,
         "messages": [],
         "trace": [],
     }

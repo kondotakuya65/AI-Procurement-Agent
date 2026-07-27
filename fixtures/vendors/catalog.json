@@ -65,7 +65,7 @@
       "description": "Widget A-lite (near substitute)",
       "unit_price": 9.5,
       "currency": "USD",
-      "moq": 200,
+      "moq": 100,
       "available_qty": 1000,
       "lead_days": 21,
       "payment_terms": "Net-60",
