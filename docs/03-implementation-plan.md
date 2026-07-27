@@ -36,8 +36,10 @@ Fine-grained checklist (one or few commits each).
 
 **Accept:** Models validate; golden tool names match `ToolName` enum.
 
-### B2 — search_vendors
-- [ ] Fixture-backed search + ranking  
+### B2 — search_vendors ✅
+- [x] Fixture-backed search + ranking (`app.tools.search_vendors`)  
+
+**Accept:** qty 500 → Coastal $9.95 best; unknown SKU → `EMPTY`; MOQ filters apply.
 
 ### B3 — FinOps client
 - [ ] `query_finops_rag`, `review_invoice`  
