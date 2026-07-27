@@ -18,13 +18,31 @@ class MockLLMClient:
 
     def complete(self, system: str, user: str) -> str:
         lower = user.lower()
-        if "draft" in lower and "email" in lower:
+        if "draft" in lower and ("email" in lower or "intent:" in lower):
+            vendor = "Vendor"
+            sku = "SKU-1001"
+            qty = "500"
+            quoted = "10.80"
+            target = "10.00"
+            for line in user.splitlines():
+                if line.lower().startswith("vendor:"):
+                    vendor = line.split(":", 1)[1].strip() or vendor
+                elif line.lower().startswith("sku:"):
+                    sku = line.split(":", 1)[1].strip() or sku
+                elif line.lower().startswith("quantity:"):
+                    qty = line.split(":", 1)[1].strip() or qty
+                elif line.lower().startswith("quoted unit price:"):
+                    quoted = line.split(":", 1)[1].strip().lstrip("$") or quoted
+                elif line.lower().startswith("target unit price:"):
+                    raw = line.split(":", 1)[1].strip()
+                    if raw and "not specified" not in raw.lower():
+                        target = raw.lstrip("$")
             return (
-                "Subject: Request for revised pricing on SKU-1001\n\n"
-                "Dear Vendor,\n\n"
-                "We are procuring 500 units of SKU-1001. Our historical paid price "
-                "and contract are $10.00/unit. Your current quote is above that "
-                "benchmark; please confirm whether you can match $9.95–$10.00.\n\n"
+                f"Subject: Request for revised pricing on {sku}\n\n"
+                f"Dear {vendor},\n\n"
+                f"We are procuring {qty} units of {sku}. Your current quote is "
+                f"${quoted}/unit. Our historical/contract benchmark is about "
+                f"${target}/unit; please confirm if you can revise accordingly.\n\n"
                 "Regards,\nProcurement"
             )
         if "plan" in lower or "next tool" in lower or "thought" in lower:

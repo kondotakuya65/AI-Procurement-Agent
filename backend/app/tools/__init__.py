@@ -17,6 +17,7 @@ from app.tools.contracts import (
     ToolStatus,
     VendorOffer,
 )
+from app.tools.draft_email import draft_email
 from app.tools.query_finops import query_finops_rag
 from app.tools.review_invoice import review_invoice
 from app.tools.search_vendors import search_vendors
@@ -37,6 +38,7 @@ __all__ = [
     "ToolResult",
     "ToolStatus",
     "VendorOffer",
+    "draft_email",
     "query_finops_rag",
     "review_invoice",
     "search_vendors",

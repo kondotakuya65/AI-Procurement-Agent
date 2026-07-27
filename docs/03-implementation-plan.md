@@ -47,8 +47,11 @@ Fine-grained checklist (one or few commits each).
 
 **Accept:** mock SKU-1001 → $10; INV-104 → Reject; live failure → `mock_fallback`.
 
-### B4 — draft_email
-- [ ] Professional draft prompt wrapper  
+### B4 — draft_email ✅
+- [x] Professional draft prompt wrapper (`app.tools.draft_email`)  
+- [x] Subject/body parse + deterministic fallback  
+
+**Accept:** mock LLM drafts Alpha negotiation email; empty LLM → template fallback.
 
 ## Phase C — LangGraph
 
