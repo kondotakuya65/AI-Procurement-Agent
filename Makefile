@@ -15,5 +15,8 @@ frontend-run:
 test:
 	cd backend && pytest
 
+eval:
+	cd backend && (.venv/Scripts/python -m app.eval.cli || .venv/bin/python -m app.eval.cli)
+
 health:
 	curl -s http://localhost:8100/api/health

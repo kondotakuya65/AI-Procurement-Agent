@@ -35,9 +35,11 @@
       "expected": {
         "first_search_empty": true,
         "suggested_sku": "SKU-1001-ALT",
-        "hitl_required": false
+        "best_vendor": "Gamma Logistics",
+        "best_unit_price": 9.5,
+        "hitl_required": true
       },
-      "notes": "Second search may use similar SKU from catalog notes / ALT offerings."
+      "notes": "Second search uses SKU-1001-ALT; draft still pauses for HITL."
     },
     {
       "id": "price_drift_review_inv_104",

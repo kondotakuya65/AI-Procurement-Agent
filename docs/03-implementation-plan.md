@@ -105,8 +105,11 @@ Fine-grained checklist (one or few commits each).
 
 ## Phase F — Quality + stretch
 
-### F1 — Eval + CI
-- [ ] Golden tool-order tests, mocked LLM  
+### F1 — Eval + CI ✅
+- [x] Golden tool-order tests, mocked LLM (`app.eval` + pytest)  
+- [x] GitHub Actions CI (backend pytest + frontend build)  
+
+**Accept:** all golden scenarios pass offline; CI workflow present.
 
 ### F2 — Reflection stretch
 - [ ] Reviewer LLM rewrites email if weak  
