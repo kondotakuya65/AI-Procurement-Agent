@@ -130,8 +130,8 @@ docker compose up --build
 7. **Done (this commit):** `draft_email` tool
 
 ### Phase C — LangGraph
-8. **Done (this commit):** Typed state + graph skeleton  
-9. Happy-path workflow (search → history → compare → review/draft → summary)  
+8. Typed state + graph skeleton  
+9. **Done (this commit):** Happy-path workflow (search → history → compare → draft → summary)  
 10. Reflection / re-plan (zero vendors → similar SKUs; tool retry)  
 11. HITL interrupt before final email
 

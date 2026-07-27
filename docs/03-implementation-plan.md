@@ -61,8 +61,10 @@ Fine-grained checklist (one or few commits each).
 
 **Accept:** `compile_procurement_graph().invoke(...)` walks all nodes; trace length == NODE_ORDER.
 
-### C2 — Happy path
-- [ ] parse → search → history → compare → draft → summary  
+### C2 — Happy path ✅
+- [x] parse → search → history → compare → draft → summary (real tools)  
+
+**Accept:** golden goal → Coastal $9.95 best, Alpha $10.80 negotiate, email draft + HITL pending.
 
 ### C3 — Re-plan / errors
 - [ ] Zero vendors → similar SKU suggestion  
