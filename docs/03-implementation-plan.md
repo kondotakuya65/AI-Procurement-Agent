@@ -55,8 +55,11 @@ Fine-grained checklist (one or few commits each).
 
 ## Phase C — LangGraph
 
-### C1 — State + skeleton
-- [ ] `ProcurementState`, node stubs, compile  
+### C1 — State + skeleton ✅
+- [x] `ProcurementState`, node stubs, compile (`app.agent`)  
+- [x] In-memory checkpointer ready for HITL  
+
+**Accept:** `compile_procurement_graph().invoke(...)` walks all nodes; trace length == NODE_ORDER.
 
 ### C2 — Happy path
 - [ ] parse → search → history → compare → draft → summary  
