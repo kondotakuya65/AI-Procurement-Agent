@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI-Procurement-Agent — Live screenshots</title>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: #121a2b;
+      --line: #243049;
+      --text: #e8eefc;
+      --muted: #93a0b8;
+      --accent: #3b82f6;
+      --accent-soft: #1e3a5f;
+      --ok: #34d399;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+      background:
+        radial-gradient(1200px 500px at 10% -10%, #1a2a4a 0%, transparent 55%),
+        radial-gradient(900px 400px at 90% 0%, #132038 0%, transparent 50%),
+        var(--bg);
+      color: var(--text);
+    }
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 3rem;
+    }
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: space-between;
+      align-items: end;
+      margin-bottom: 1.25rem;
+    }
+    .eyebrow {
+      color: var(--muted);
+      font-size: 0.8rem;
+      letter-spacing: 0.04em;
+      text-transform: lowercase;
+      margin: 0 0 0.25rem;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(1.4rem, 3vw, 1.9rem);
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+    .tabs {
+      display: inline-flex;
+      gap: 0.35rem;
+      padding: 0.3rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(18, 26, 43, 0.85);
+    }
+    .tabs button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 0.45rem 0.95rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.9rem;
+    }
+    .tabs button[aria-selected="true"] {
+      background: var(--accent-soft);
+      color: var(--text);
+      box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.45);
+    }
+    .stage {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--panel);
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    }
+    .viewport {
+      position: relative;
+      background: #070b14;
+      aspect-ratio: 16 / 10;
+      display: grid;
+      place-items: center;
+    }
+    .viewport img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      background: #070b14;
+    }
+    .nav {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 0.6rem;
+      pointer-events: none;
+    }
+    .nav button {
+      pointer-events: auto;
+      width: 2.4rem;
+      height: 2.4rem;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(11, 18, 32, 0.78);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+    .nav button:hover { border-color: var(--accent); }
+    .meta {
+      display: grid;
+      gap: 0.65rem;
+      padding: 1rem 1.15rem 1.15rem;
+      border-top: 1px solid var(--line);
+    }
+    .caption {
+      margin: 0;
+      color: var(--text);
+      font-size: 1.02rem;
+      font-weight: 600;
+    }
+    .blurb {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+    .dots {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+    }
+    .dots button {
+      width: 0.65rem;
+      height: 0.65rem;
+      border-radius: 999px;
+      border: 0;
+      padding: 0;
+      background: #334155;
+      cursor: pointer;
+    }
+    .dots button[aria-current="true"] {
+      width: 1.4rem;
+      background: var(--accent);
+    }
+    .counter {
+      margin-left: auto;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-variant-numeric: tabular-nums;
+    }
+    .hint {
+      margin-top: 0.9rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    .hint code {
+      color: var(--ok);
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 0.82rem;
+    }
+    a.back {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    a.back:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <p class="eyebrow">portfolio · agent layer</p>
+        <h1>Live result screenshots</h1>
+      </div>
+      <div class="tabs" role="tablist" aria-label="LLM mode">
+        <button type="button" role="tab" id="tab-mock" aria-selected="true">Mock LLM</button>
+        <button type="button" role="tab" id="tab-ollama" aria-selected="false">Ollama</button>
+      </div>
+    </header>
+
+    <section class="stage" aria-live="polite">
+      <div class="viewport">
+        <img id="slide-img" src="mock-shot1.PNG" alt="Mock run — empty workspace ready to start" />
+        <div class="nav">
+          <button type="button" id="prev" aria-label="Previous screenshot">‹</button>
+          <button type="button" id="next" aria-label="Next screenshot">›</button>
+        </div>
+      </div>
+      <div class="meta">
+        <p class="caption" id="slide-title">Goal ready</p>
+        <p class="blurb" id="slide-blurb">Workspace idle with demo goal loaded — mock LLM + mock FinOps.</p>
+        <div class="dots" id="dots" role="tablist" aria-label="Slides"></div>
+      </div>
+    </section>
+
+    <p class="hint">
+      Keyboard: <code>←</code> <code>→</code> to slide · <code>1</code>/<code>2</code> to switch Mock / Ollama ·
+      <a class="back" href="../README.md">Back to README</a>
+    </p>
+  </div>
+
+  <script>
+    const decks = {
+      mock: [
+        {
+          src: "mock-shot1.PNG",
+          title: "Goal ready (mock)",
+          blurb: "Empty workspace with the demo SKU-1001 goal. API online, llm mock, finops mock.",
+        },
+        {
+          src: "mock-shot2.PNG",
+          title: "HITL pause — draft ready",
+          blurb: "Agent ranked vendors, checked FinOps history, drafted a negotiation email, and paused for Approve / Edit / Reject.",
+        },
+        {
+          src: "mock-shot3.PNG",
+          title: "Thought / action / observation",
+          blurb: "Full SSE trace: parse → search_vendors → query_finops → compare → draft_email (+ reviewer PASS).",
+        },
+        {
+          src: "mock-shot4.PNG",
+          title: "Approved → outbox written",
+          blurb: "After Approve, status is completed and the draft is saved under backend/outbox/.",
+        },
+      ],
+      ollama: [
+        {
+          src: "ollama-shot1.PNG",
+          title: "Goal ready (Ollama)",
+          blurb: "Same demo goal with llm ollama — local phi3:mini behind the agent tools.",
+        },
+        {
+          src: "ollama-shot2.PNG",
+          title: "Live progress streaming",
+          blurb: "Mid-run SSE progress while Ollama drafts; status shows running.",
+        },
+        {
+          src: "ollama-shot3.PNG",
+          title: "Email reflection rewrite",
+          blurb: "Reviewer caught a weak draft (“quoted unit price missing”) and triggered a rewrite loop.",
+        },
+        {
+          src: "ollama-shot4.PNG",
+          title: "HITL with Ollama draft",
+          blurb: "Richer Ollama-written subject/body waiting for human approval.",
+        },
+        {
+          src: "ollama-shot5.PNG",
+          title: "Completed + outbox",
+          blurb: "Approved run with summary, draft preview, and outbox path for the negotiated email.",
+        },
+      ],
+    };
+
+    let mode = "mock";
+    let index = 0;
+
+    const img = document.getElementById("slide-img");
+    const title = document.getElementById("slide-title");
+    const blurb = document.getElementById("slide-blurb");
+    const dots = document.getElementById("dots");
+    const tabMock = document.getElementById("tab-mock");
+    const tabOllama = document.getElementById("tab-ollama");
+
+    function render() {
+      const slides = decks[mode];
+      const slide = slides[index];
+      img.src = slide.src;
+      img.alt = slide.title;
+      title.textContent = slide.title;
+      blurb.textContent = slide.blurb;
+
+      dots.innerHTML = "";
+      slides.forEach((_, i) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.setAttribute("aria-label", `Go to slide ${i + 1}`);
+        if (i === index) b.setAttribute("aria-current", "true");
+        b.addEventListener("click", () => {
+          index = i;
+          render();
+        });
+        dots.appendChild(b);
+      });
+
+      const counter = document.createElement("span");
+      counter.className = "counter";
+      counter.textContent = `${index + 1} / ${slides.length}`;
+      dots.appendChild(counter);
+
+      tabMock.setAttribute("aria-selected", mode === "mock" ? "true" : "false");
+      tabOllama.setAttribute("aria-selected", mode === "ollama" ? "true" : "false");
+    }
+
+    function setMode(next) {
+      mode = next;
+      index = 0;
+      render();
+    }
+
+    function step(delta) {
+      const slides = decks[mode];
+      index = (index + delta + slides.length) % slides.length;
+      render();
+    }
+
+    document.getElementById("prev").addEventListener("click", () => step(-1));
+    document.getElementById("next").addEventListener("click", () => step(1));
+    tabMock.addEventListener("click", () => setMode("mock"));
+    tabOllama.addEventListener("click", () => setMode("ollama"));
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") step(-1);
+      if (e.key === "ArrowRight") step(1);
+      if (e.key === "1") setMode("mock");
+      if (e.key === "2") setMode("ollama");
+    });
+
+    render();
+  </script>
+</body>
+</html>

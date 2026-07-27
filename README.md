@@ -16,6 +16,37 @@ Sits on top of [AI-FinOps-RAG](https://github.com/kondotakuya65/AI-FinOps-RAG) a
 
 ---
 
+## Screenshots
+
+Interactive slider (Mock LLM + Ollama): **[open gallery →](shots/gallery.html)**
+
+<details open>
+<summary><strong>Mock LLM</strong> — click a step to expand</summary>
+
+| Step | Preview |
+| --- | --- |
+| 1 · Goal ready | ![Mock — goal ready](shots/mock-shot1.PNG) |
+| 2 · HITL draft pause | ![Mock — HITL approval](shots/mock-shot2.PNG) |
+| 3 · Thought / action / observation | ![Mock — SSE trace](shots/mock-shot3.PNG) |
+| 4 · Approved → outbox | ![Mock — completed](shots/mock-shot4.PNG) |
+
+</details>
+
+<details>
+<summary><strong>Ollama</strong> — local `phi3:mini` (reflection rewrite included)</summary>
+
+| Step | Preview |
+| --- | --- |
+| 1 · Goal ready | ![Ollama — goal ready](shots/ollama-shot1.PNG) |
+| 2 · Live progress stream | ![Ollama — running](shots/ollama-shot2.PNG) |
+| 3 · Reviewer rewrite | ![Ollama — reflection](shots/ollama-shot3.PNG) |
+| 4 · HITL with Ollama draft | ![Ollama — HITL](shots/ollama-shot4.PNG) |
+| 5 · Completed + outbox | ![Ollama — completed](shots/ollama-shot5.PNG) |
+
+</details>
+
+---
+
 ## Architecture
 
 ```mermaid
@@ -75,6 +106,7 @@ flowchart TB
 │   └── db/            run persistence (sqlite | postgres)
 ├── frontend/          Next.js workspace
 ├── fixtures/          vendors/, finops_mock/, scenarios/
+├── shots/             live UI screenshots + gallery.html slider
 ├── docs/
 ├── docker-compose.yml
 └── .env.example
