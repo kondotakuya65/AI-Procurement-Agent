@@ -137,7 +137,7 @@ docker compose up --build
 
 ### Phase D — API + streaming
 12. `POST /api/runs` + resume endpoints  
-13. SSE thought / action / observation stream
+13. **Done (this commit):** SSE thought / action / observation stream
 
 ### Phase E — UI
 14. Workspace: goal input, live step log, state panel  

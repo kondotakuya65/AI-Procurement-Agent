@@ -81,11 +81,15 @@ Fine-grained checklist (one or few commits each).
 
 ## Phase D — API + streaming
 
-### D1 — Runs API
-- [ ] create run, get status, resume  
+### D1 — Runs API ✅
+- [x] `POST /api/runs`, `GET /api/runs/{id}`, `POST /api/runs/{id}/resume`  
 
-### D2 — SSE traces
-- [ ] Stream thought / action / observation  
+**Accept:** create → `awaiting_hitl` with draft interrupt; resume approve → `completed` + outbox.
+
+### D2 — SSE traces ✅
+- [x] Stream thought / action / observation (`POST /api/runs/stream`, resume/replay)  
+
+**Accept:** SSE emits parse→search→…→interrupt; resume stream ends `completed`.
 
 ## Phase E — UI
 
