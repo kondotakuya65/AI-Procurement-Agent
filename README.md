@@ -12,7 +12,7 @@ Portfolio sample: a **LangGraph ReAct agent** that runs a vendor procurement wor
 
 Sits on top of [AI-FinOps-RAG](https://github.com/kondotakuya65/AI-FinOps-RAG) as an external tool API (optional live; mock works offline).
 
-**Docs:** [Scenario](docs/01-scenario.md) · [Architecture](docs/02-architecture.md) · [Implementation plan](docs/03-implementation-plan.md) · [Design decisions](docs/04-design-decisions.md) · [Docs index](docs/README.md)
+**Docs:** [Scenario](docs/01-scenario.md) · [Architecture](docs/02-architecture.md) · [Implementation plan](docs/03-implementation-plan.md) · [Design decisions](docs/04-design-decisions.md) · [Compose with FinOps](docs/05-compose.md) · [Docs index](docs/README.md)
 
 ---
 
@@ -147,8 +147,8 @@ MVP ship line: through **E2** (HITL UI).
 
 ### Phase F — Quality + stretch
 16. Golden eval + CI  
-17. **Done (this commit):** Stretch: email reflection loop (writer → reviewer)  
-18. Stretch: optional live vendor search flag; compose with live FinOps  
+17. Stretch: email reflection loop (writer → reviewer)  
+18. **Done (this commit):** live/hybrid vendor search + FinOps compose
 
 ---
 

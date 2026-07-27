@@ -41,6 +41,10 @@ class Settings(BaseSettings):
     # Stretch: writer → reviewer loop on draft_email
     email_reflection: bool = True
 
+    # Stretch: vendor search — fixtures | live | hybrid
+    vendor_search_mode: str = "fixtures"
+    vendor_live_url: str = ""  # optional GET ?sku=&quantity= → {offers:[...]}
+
 
 @lru_cache
 def get_settings() -> Settings:

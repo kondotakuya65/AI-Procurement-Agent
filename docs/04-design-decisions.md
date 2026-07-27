@@ -7,7 +7,11 @@ Explicit state, cycles, and HITL interrupts map cleanly to LangGraph. CrewAI can
 Procurement tools call FinOps HTTP APIs. A **mock FinOps** mode keeps this repo clone-and-run without starting FinOps-RAG.
 
 ## Deterministic vendor search first
-Fixture catalog > SerpAPI for demos and eval. Live search is a feature flag stretch.
+Fixture catalog > live overlay / optional `VENDOR_LIVE_URL` for demos and eval.
+`VENDOR_SEARCH_MODE=fixtures|live|hybrid` — SerpAPI not required for the stretch demo.
+
+## Compose FinOps on :8000
+Agent stays on **8100** / **3001**. Set `FINOPS_MODE=live` and see `GET /api/integrations`.
 
 ## HITL before any “send”
 Enterprise safety. MVP writes `outbox/` or DB rows; no SMTP.

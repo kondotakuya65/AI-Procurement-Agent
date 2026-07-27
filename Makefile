@@ -1,4 +1,4 @@
-.PHONY: backend-install backend-run frontend-install frontend-run test health
+.PHONY: backend-install backend-run frontend-install frontend-run test eval health integrations
 
 backend-install:
 	cd backend && python -m venv .venv && (.venv/Scripts/pip install -r requirements.txt || .venv/bin/pip install -r requirements.txt)
@@ -20,3 +20,6 @@ eval:
 
 health:
 	curl -s http://localhost:8100/api/health
+
+integrations:
+	curl -s http://localhost:8100/api/integrations

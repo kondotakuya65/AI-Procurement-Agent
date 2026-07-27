@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "notes": [
+    "Simulated 'live web' vendor offers used when VENDOR_SEARCH_MODE=live|hybrid",
+    "and no VENDOR_LIVE_URL is configured (or the live URL fails)."
+  ],
+  "offers": [
+    {
+      "offer_id": "LIVE-ORBIT-1001",
+      "vendor": "Orbit Industrial",
+      "sku": "SKU-1001",
+      "description": "Widget A (marketplace listing)",
+      "unit_price": 9.8,
+      "currency": "USD",
+      "moq": 100,
+      "available_qty": 3000,
+      "lead_days": 12,
+      "payment_terms": "Net-30",
+      "notes": "Simulated live search hit — undercuts Coastal slightly."
+    },
+    {
+      "offer_id": "LIVE-PACIFIC-1001",
+      "vendor": "Pacific Components Co",
+      "sku": "SKU-1001",
+      "description": "Widget A bulk lot",
+      "unit_price": 10.4,
+      "currency": "USD",
+      "moq": 200,
+      "available_qty": 1200,
+      "lead_days": 9,
+      "payment_terms": "Net-45",
+      "notes": "Simulated live search hit."
+    },
+    {
+      "offer_id": "LIVE-ORBIT-ALT",
+      "vendor": "Orbit Industrial",
+      "sku": "SKU-1001-ALT",
+      "description": "Widget A-lite marketplace",
+      "unit_price": 9.35,
+      "currency": "USD",
+      "moq": 100,
+      "available_qty": 800,
+      "lead_days": 18,
+      "payment_terms": "Net-30",
+      "notes": "Simulated live alternate SKU."
+    }
+  ]
+}

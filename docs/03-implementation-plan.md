@@ -116,10 +116,12 @@ Fine-grained checklist (one or few commits each).
 
 **Accept:** weak draft → rewrite; strong mock draft → PASS; flag can disable.
 
-### F3 — Integrations stretch
-- [ ] Optional live search flag  
-- [ ] Compose alongside FinOps-RAG  
+### F3 — Integrations stretch ✅
+- [x] Optional live / hybrid vendor search (`VENDOR_SEARCH_MODE`)  
+- [x] Compose alongside FinOps-RAG (`FINOPS_MODE=live` + `/api/integrations`)  
+
+**Accept:** hybrid ranks Orbit ahead of Coastal; integrations endpoint reports ports + FinOps probe.
 
 ## MVP ship line
 
-**Through E2** = portfolio-ready demo. F1 strongly recommended; F2–F3 optional.
+**Through E2** = portfolio-ready demo. F1–F3 stretch complete.

@@ -125,6 +125,10 @@ class SearchVendorsData(BaseModel):
     quantity: int
     offers: list[VendorOffer] = Field(default_factory=list)
     best_offer: VendorOffer | None = None
+    source: str = Field(
+        default="fixtures",
+        description="fixtures | live_sim | live_url | hybrid:*",
+    )
 
 
 # --- query_finops_rag ---

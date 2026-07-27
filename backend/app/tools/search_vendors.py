@@ -1,10 +1,10 @@
-"""search_vendors — fixture catalog search + price/lead ranking."""
+"""search_vendors — fixture / live / hybrid ranking."""
 
 from __future__ import annotations
 
 import time
 
-from app.fixtures import search_vendor_offers
+from app.config import get_settings
 from app.tools.contracts import (
     SearchVendorsData,
     SearchVendorsInput,
@@ -12,6 +12,7 @@ from app.tools.contracts import (
     ToolResult,
     VendorOffer,
 )
+from app.tools.live_search import resolve_vendor_offers
 
 
 def search_vendors(
@@ -33,10 +34,12 @@ def search_vendors(
                 include_alternates=include_alternates,
             )
 
-        raw = search_vendor_offers(
+        settings = get_settings()
+        raw, source = resolve_vendor_offers(
             inp.sku,
             inp.quantity,
             include_alternates=inp.include_alternates,
+            settings=settings,
         )
         offers = [VendorOffer.model_validate(row) for row in raw]
         best = offers[0] if offers else None
@@ -45,27 +48,29 @@ def search_vendors(
             quantity=inp.quantity,
             offers=offers,
             best_offer=best,
+            source=source,
         )
         latency_ms = (time.perf_counter() - started) * 1000
 
         if not offers:
             hint = (
-                " Try include_alternates=true or a similar SKU."
+                " Try include_alternates=true, similar SKU, or VENDOR_SEARCH_MODE=hybrid."
                 if not inp.include_alternates
                 else ""
             )
             return ToolResult.empty(
                 ToolName.SEARCH_VENDORS,
                 observation=(
-                    f"No vendors for {data.sku} qty {data.quantity}.{hint}"
+                    f"No vendors for {data.sku} qty {data.quantity} "
+                    f"(source={source}).{hint}"
                 ),
                 data=data,
                 latency_ms=latency_ms,
             )
 
         observation = (
-            f"Found {len(offers)} offer(s) for {data.sku} qty {data.quantity}; "
-            f"best {best.vendor} @ ${best.unit_price:.2f} "
+            f"Found {len(offers)} offer(s) for {data.sku} qty {data.quantity} "
+            f"via {source}; best {best.vendor} @ ${best.unit_price:.2f} "
             f"(lead {best.lead_days}d)."
         )
         return ToolResult.ok(
