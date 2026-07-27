@@ -5,6 +5,7 @@ from app.agent.graph import (
     compile_procurement_graph,
     get_compiled_graph,
 )
+from app.agent.hitl import resume_command
 from app.agent.state import ProcurementState, initial_state
 
 __all__ = [
@@ -13,4 +14,5 @@ __all__ = [
     "compile_procurement_graph",
     "get_compiled_graph",
     "initial_state",
+    "resume_command",
 ]

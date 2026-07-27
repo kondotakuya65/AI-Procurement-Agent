@@ -368,23 +368,90 @@ def draft_email_node(state: ProcurementState) -> dict[str, Any]:
 
 
 def hitl_gate_node(state: ProcurementState) -> dict[str, Any]:
-    """Gate before send — C4 adds interrupt() / resume."""
-    has_draft = bool(state.get("email_draft"))
-    status = state.get("hitl_status") or ("pending" if has_draft else "skipped")
-    return {
-        "hitl_status": status,
-        "messages": [f"hitl_gate: {status}"],
-        "trace": _trace(
-            "hitl_gate",
-            (
-                "HITL gate: draft ready for Approve / Edit / Reject (interrupt in C4)."
-                if has_draft
-                else "HITL gate: no draft — skipped."
+    """Pause for human approval when an email draft exists."""
+    from langgraph.types import interrupt
+
+    from app.agent.hitl import apply_edited_draft, parse_hitl_resume
+    from app.agent.outbox import write_outbox_email
+    from app.tools.contracts import HitlDecision
+
+    draft = state.get("email_draft")
+    if not draft:
+        return {
+            "hitl_status": "skipped",
+            "messages": ["hitl_gate: skipped"],
+            "trace": _trace(
+                "hitl_gate",
+                "HITL gate: no draft — skipped.",
+                kind="status",
+                data={"hitl_status": "skipped", "has_draft": False},
             ),
-            kind="status",
-            data={"hitl_status": status, "has_draft": has_draft},
-        ),
+        }
+
+    # Surface draft to the caller; resume value becomes the return of interrupt()
+    decision_raw = interrupt(
+        {
+            "type": "email_approval",
+            "prompt": "Approve, edit, or reject this negotiation email before send.",
+            "actions": ["approve", "edit", "reject"],
+            "draft": draft,
+            "vendor": draft.get("vendor"),
+            "sku": state.get("sku"),
+            "goal": state.get("goal"),
+        }
+    )
+    resume = parse_hitl_resume(decision_raw)
+    decision = resume.decision
+
+    update: dict[str, Any] = {
+        "hitl_decision": decision.value,
+        "messages": [f"hitl_gate: {decision.value}"],
     }
+
+    if decision == HitlDecision.REJECT:
+        update["hitl_status"] = "rejected"
+        update["trace"] = _trace(
+            "hitl_gate",
+            "HITL rejected — email will not be sent.",
+            kind="status",
+            data={"hitl_status": "rejected"},
+        )
+        return update
+
+    if decision == HitlDecision.EDIT:
+        edited = apply_edited_draft(draft, resume.edited_draft or "")
+        update["email_draft"] = edited
+        update["hitl_status"] = "edited"
+        # Treat edit as approval of the revised draft for MVP outbox write
+        path = write_outbox_email(
+            draft=edited,
+            goal=state.get("goal") or "",
+            extra={"decision": "edit"},
+        )
+        update["outbox_path"] = str(path)
+        update["trace"] = _trace(
+            "hitl_gate",
+            f"HITL edited draft saved to outbox: {path.name}",
+            kind="status",
+            data={"hitl_status": "edited", "outbox_path": str(path)},
+        )
+        return update
+
+    # approve
+    path = write_outbox_email(
+        draft=draft,
+        goal=state.get("goal") or "",
+        extra={"decision": "approve"},
+    )
+    update["hitl_status"] = "approved"
+    update["outbox_path"] = str(path)
+    update["trace"] = _trace(
+        "hitl_gate",
+        f"HITL approved — wrote outbox {path.name} (no SMTP).",
+        kind="status",
+        data={"hitl_status": "approved", "outbox_path": str(path)},
+    )
+    return update
 
 
 def finalize_node(state: ProcurementState) -> dict[str, Any]:
@@ -413,6 +480,8 @@ def finalize_node(state: ProcurementState) -> dict[str, Any]:
         parts.append(f"replan: {state.get('original_sku')}→{state.get('suggested_sku')}")
     if state.get("email_draft"):
         parts.append(f"Draft subject: {state['email_draft'].get('subject')}")
+    if state.get("outbox_path"):
+        parts.append(f"Outbox: {state['outbox_path']}")
     if state.get("finops_degraded"):
         parts.append("FinOps degraded")
     if state.get("error"):

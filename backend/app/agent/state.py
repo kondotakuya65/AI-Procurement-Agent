@@ -32,6 +32,7 @@ class ProcurementState(TypedDict):
     email_draft: NotRequired[dict[str, Any] | None]
     hitl_status: NotRequired[Literal["pending", "approved", "edited", "rejected", "skipped"]]
     hitl_decision: NotRequired[str | None]
+    outbox_path: NotRequired[str | None]
     summary: NotRequired[str | None]
     error: NotRequired[str | None]
 
@@ -63,6 +64,7 @@ def initial_state(goal: str) -> ProcurementState:
         "email_draft": None,
         "hitl_status": "pending",
         "hitl_decision": None,
+        "outbox_path": None,
         "summary": None,
         "error": None,
         "search_attempts": 0,

@@ -132,8 +132,8 @@ docker compose up --build
 ### Phase C — LangGraph
 8. Typed state + graph skeleton  
 9. Happy-path workflow (search → history → compare → draft → summary)  
-10. **Done (this commit):** Reflection / re-plan (zero vendors → similar SKUs; tool retry)  
-11. HITL interrupt before final email
+10. Reflection / re-plan (zero vendors → similar SKUs; tool retry)  
+11. **Done (this commit):** HITL interrupt before final email
 
 ### Phase D — API + streaming
 12. `POST /api/runs` + resume endpoints  

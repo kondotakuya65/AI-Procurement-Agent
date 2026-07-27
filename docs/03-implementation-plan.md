@@ -73,8 +73,11 @@ Fine-grained checklist (one or few commits each).
 
 **Accept:** SKU-9999 → SKU-1001-ALT + Gamma offer; INV-104 goal → Reject without vendor search.
 
-### C4 — HITL
-- [ ] Interrupt before send; resume approve/edit/reject  
+### C4 — HITL ✅
+- [x] `interrupt()` before send; resume approve / edit / reject  
+- [x] Approve/edit writes local `outbox/` (no SMTP)  
+
+**Accept:** happy-path pauses with draft payload; approve → outbox JSON; reject → no file.
 
 ## Phase D — API + streaming
 
