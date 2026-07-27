@@ -1,4 +1,4 @@
-"""Agent tools: contracts + search_vendors (FinOps / draft_email in B3–B4)."""
+"""Agent tools package."""
 
 from app.tools.contracts import (
     DraftEmailData,
@@ -17,6 +17,8 @@ from app.tools.contracts import (
     ToolStatus,
     VendorOffer,
 )
+from app.tools.query_finops import query_finops_rag
+from app.tools.review_invoice import review_invoice
 from app.tools.search_vendors import search_vendors
 
 __all__ = [
@@ -35,5 +37,7 @@ __all__ = [
     "ToolResult",
     "ToolStatus",
     "VendorOffer",
+    "query_finops_rag",
+    "review_invoice",
     "search_vendors",
 ]

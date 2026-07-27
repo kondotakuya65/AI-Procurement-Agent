@@ -41,9 +41,11 @@ Fine-grained checklist (one or few commits each).
 
 **Accept:** qty 500 → Coastal $9.95 best; unknown SKU → `EMPTY`; MOQ filters apply.
 
-### B3 — FinOps client
-- [ ] `query_finops_rag`, `review_invoice`  
-- [ ] Live HTTP + mock fallback / retries  
+### B3 — FinOps client ✅
+- [x] `query_finops_rag`, `review_invoice`  
+- [x] Live HTTP + mock fallback / retries (`FINOPS_MODE=live|mock`)  
+
+**Accept:** mock SKU-1001 → $10; INV-104 → Reject; live failure → `mock_fallback`.
 
 ### B4 — draft_email
 - [ ] Professional draft prompt wrapper  

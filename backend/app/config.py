@@ -32,6 +32,8 @@ class Settings(BaseSettings):
 
     finops_mode: str = "mock"  # live | mock
     finops_api_url: str = "http://localhost:8000"
+    finops_timeout_seconds: float = 15.0
+    finops_retries: int = 2
 
     fixtures_dir: str = str(_repo_root() / "fixtures")
     outbox_dir: str = "./outbox"
