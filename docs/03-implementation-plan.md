@@ -93,8 +93,10 @@ Fine-grained checklist (one or few commits each).
 
 ## Phase E — UI
 
-### E1 — Workspace
-- [ ] Goal box, trace log, state side panel  
+### E1 — Workspace ✅
+- [x] Goal box, live trace log, state side panel  
+
+**Accept:** UI streams SSE traces; state panel shows best/negotiate/draft preview.
 
 ### E2 — HITL panel
 - [ ] Draft preview + Approve / Edit / Reject  
